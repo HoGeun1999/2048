@@ -1,5 +1,5 @@
 const table = document.getElementById('table')
-const new_game_button = document.getElementById('new_game')
+const newGameButton = document.getElementById('newGame')
 const tdList = []
 const tdDataList = [
     [0, 0, 0, 0],
@@ -9,9 +9,14 @@ const tdDataList = [
 ]
 const eventKeyList = ['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight']
 
+newGameButton.onclick = function () {
+    newGame()
+}
+
 window.addEventListener("keydown", keyIn)
 
 function keyIn(event) {
+    const beforeTdDataList = tdDataList.map(v => v.slice())
     if (eventKeyList.indexOf(event.key) != -1) {
         if (event.key === 'ArrowDown') {
             ArrowDown()
@@ -23,10 +28,20 @@ function keyIn(event) {
             ArrowRight()
         }
 
+        const moveCheckBool = moveCheck(beforeTdDataList)
+        const gameOverCheckBool = gameOverCheck()
+        const fullCheckBool = fullCheck()
 
-        makeRandomNum2()
-        console.log(tdDataList)
-        updateTable()
+        if (moveCheckBool === true && fullCheckBool === false) {
+            makeRandomNum2()
+        } else {
+            if (gameOverCheckBool === true && fullCheckBool === true) {
+                alert("GAME OVER")
+            }
+        }
+
+        printDataList()
+        setTimeout(updateTable(), 10000)
     } else {
         console.log(100)
     }
@@ -34,6 +49,7 @@ function keyIn(event) {
 
 
 function ArrowDown() {
+    const moveCheck = false
     for (let i = 0; i < 4; i++) {
         const ArrowDownList = []
         for (let j = 0; j < 4; j++) {
@@ -51,6 +67,7 @@ function ArrowDown() {
         for (let p = 0; p < 4; p++) {
             if (p === 3) {
                 ArrowDownAnswer.push(ArrowDownList[p])
+                break
             }
             if (ArrowDownList[p] === ArrowDownList[p + 1]) {
                 num1 = ArrowDownList[p] + ArrowDownList[p + 1]
@@ -68,26 +85,126 @@ function ArrowDown() {
             tdDataList[3 - s][i] = ArrowDownAnswer[s]
         }
     }
+
+    return moveCheck
 }
 
-
 function ArrowUp() {
+    for (let i = 0; i < 4; i++) {
+        const ArrowUpList = []
+        for (let j = 0; j < 4; j++) {
+            if (tdDataList[j][i] != 0) {
+                ArrowUpList.push(tdDataList[j][i])
+            }
+        }
 
-    console.log(102)
+        const ArrowUpListLen = ArrowUpList.length
+        for (let k = 0; k < 4 - ArrowUpListLen; k++) {
+            ArrowUpList.push(0)
+        }
+
+        const ArrowUpAnswer = []
+        for (let p = 0; p < 4; p++) {
+            if (p === 3) {
+                ArrowUpAnswer.push(ArrowUpList[p])
+                break
+            }
+            if (ArrowUpList[p] === ArrowUpList[p + 1]) {
+                num1 = ArrowUpList[p] + ArrowUpList[p + 1]
+                ArrowUpAnswer.push(num1)
+                p = p + 1
+            } else {
+                ArrowUpAnswer.push(ArrowUpList[p])
+            }
+        }
+        const ArrowUpAnswerLen = ArrowUpAnswer.length
+        for (let r = 0; r < 4 - ArrowUpAnswerLen; r++) {
+            ArrowUpAnswer.push(0)
+        }
+        for (let s = 0; s < 4; s++) {
+            tdDataList[s][i] = ArrowUpAnswer[s]
+        }
+    }
 }
 
 function ArrowLeft() {
+    for (let i = 0; i < 4; i++) {
+        const ArrowLeftList = []
+        for (let j = 0; j < 4; j++) {
+            if (tdDataList[i][j] != 0) {
+                ArrowLeftList.push(tdDataList[i][j])
+            }
+        }
 
-    console.log(103)
+        const ArrowLeftListLen = ArrowLeftList.length
+        for (let k = 0; k < 4 - ArrowLeftListLen; k++) {
+            ArrowLeftList.push(0)
+        }
+
+        const ArrowLeftAnswer = []
+        for (let p = 0; p < 4; p++) {
+            if (p === 3) {
+                ArrowLeftAnswer.push(ArrowLeftList[p])
+                break
+            }
+            if (ArrowLeftList[p] === ArrowLeftList[p + 1]) {
+                num1 = ArrowLeftList[p] + ArrowLeftList[p + 1]
+                ArrowLeftAnswer.push(num1)
+                p = p + 1
+            } else {
+                ArrowLeftAnswer.push(ArrowLeftList[p])
+            }
+        }
+        const ArrowLeftAnswerLen = ArrowLeftAnswer.length
+        for (let r = 0; r < 4 - ArrowLeftAnswerLen; r++) {
+            ArrowLeftAnswer.push(0)
+        }
+        for (let s = 0; s < 4; s++) {
+            tdDataList[i][s] = ArrowLeftAnswer[s]
+        }
+    }
 }
 
 function ArrowRight() {
+    for (let i = 0; i < 4; i++) {
+        const ArrowRightList = []
+        for (let j = 0; j < 4; j++) {
+            if (tdDataList[i][3 - j] != 0) {
+                ArrowRightList.push(tdDataList[i][3 - j])
+            }
+        }
 
-    console.log(104)
+        const ArrowRightListLen = ArrowRightList.length
+        for (let k = 0; k < 4 - ArrowRightListLen; k++) {
+            ArrowRightList.push(0)
+        }
+
+        const ArrowRightAnswer = []
+        for (let p = 0; p < 4; p++) {
+            if (p === 3) {
+                ArrowRightAnswer.push(ArrowRightList[p])
+                break
+            }
+            if (ArrowRightList[p] === ArrowRightList[p + 1]) {
+                num1 = ArrowRightList[p] + ArrowRightList[p + 1]
+                ArrowRightAnswer.push(num1)
+                p = p + 1
+            } else {
+                ArrowRightAnswer.push(ArrowRightList[p])
+            }
+        }
+        const ArrowRightAnswerLen = ArrowRightAnswer.length
+        for (let r = 0; r < 4 - ArrowRightAnswerLen; r++) {
+            ArrowRightAnswer.push(0)
+        }
+        for (let s = 0; s < 4; s++) {
+            tdDataList[i][3 - s] = ArrowRightAnswer[s]
+        }
+    }
 }
 
 
-function set_table() {
+function setTable() {
 
     for (i = 0; i < 4; i++) {
         const tr = document.createElement('tr')
@@ -104,21 +221,13 @@ function set_table() {
 }
 
 
-function new_game() {
-    set_table()
-    makeRandomNum2()
-    makeRandomNum2()
-    updateTable()
-}
-
-
 function updateTable() {
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
             if (tdDataList[i][j] != 0) {
                 tdList[i * 4 + j].textContent = tdDataList[i][j]
             } else {
-                tdList[i * 4 + j].textContent = ''
+                tdList[i * 4 + j].textContent = ' '
 
             }
         }
@@ -144,5 +253,92 @@ function makeRandomNum2() {
 }
 
 
+function fullCheck() {
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            if (tdDataList[i][j] === 0) {
+                return false
+            }
+        }
+    }
 
-new_game()
+    return true
+}
+
+
+function moveCheck(beforeTdDataList) {
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            if (tdDataList[i][j] != beforeTdDataList[i][j]) {
+                return true
+            }
+        }
+    }
+
+    return false
+}
+
+
+function gameOverCheck() {
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (tdDataList[i][j] === tdDataList[i][j + 1]) {
+                return false
+            }
+        }
+    }
+
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (tdDataList[j][i] === tdDataList[j + 1][i]) {
+                return false
+            }
+
+        }
+    }
+
+    return true
+}
+
+
+function newGame() {
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            tdDataList[i][j] = 0
+        }
+    }
+    makeRandomNum2()
+    makeRandomNum2()
+    // overrideTdDataList()
+    updateTable()
+}
+
+function printDataList() {
+    const arr = []
+    for (let i = 0; i < 4; i++) {
+        const list = []
+        for (let j = 0; j < 4; j++) {
+            list.push(tdDataList[i][j])
+        }
+        arr.push(list.join(', '))
+    }
+    console.log(arr.join('\n'))
+    console.log(' ')
+}
+
+function overrideTdDataList() {
+    const arr = [
+        [0, 0, 2, 2],
+        [0, 0, 8, 2],
+        [0, 16, 4, 2],
+        [4, 64, 2, 16]
+    ]
+
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            tdDataList[i][j] = arr[i][j]
+        }
+    }
+}
+
+setTable()
