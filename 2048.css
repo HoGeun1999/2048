@@ -1,4 +1,4 @@
-#table td {
+#table2048 td {
     border: 1px solid black;
     width: 150px;
     height: 150px;
@@ -17,34 +17,34 @@ body{
     font-size: 30;
 }
 
-.zero{
+.td0{
     background-attachment: white;
 }
 
-.two{
+.td2{
     background-color: bisque;
 }
 
-.four{
+.td4{
     background-color: aqua;
 }
 
-.eight{
+.td8{
     background-color: plum;
 }
 
-.sixteen{
+.td16{
     background-color: rgb(45, 177, 126);
 }
 
-.thirtytwo{
+.td32{
     background-color: rgb(209, 98, 98);
 }
 
-.sixtyfour{
+.td64{
     background-color: rgb(98, 98, 224);
 }
 
-.onehundredtwentyeight{
+.td128{
     background-color: rgb(154, 204, 39);
 }

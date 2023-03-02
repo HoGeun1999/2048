@@ -1,5 +1,5 @@
-// const table = document.getElementById('table')    없어도 문제가 없다?..
-const newGameButton = document.getElementById('newGame') // 근데 얘는 없으면 테이블이 지워진다
+const table2048 = document.getElementById('table2048')
+const newGameButton = document.getElementById('newGame')
 const tdList = []
 const tdDataList = [
     [0, 0, 0, 0],
@@ -8,8 +8,21 @@ const tdDataList = [
     [0, 0, 0, 0]
 ]
 const eventKeyList = ['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight']
-
-const score = document.getElementById('score')  //마찬가지..?? 자바스크립트 이상한데? 
+const dicTdColor = {
+    0: 'td0',
+    2: 'td2',
+    4: 'td4',
+    8: 'td8',
+    16: 'td16',
+    32: 'td32',
+    64: 'td64',
+    128: 'td128',
+    256: 'td256',
+    512: 'td512',
+    1024: 'td1024',
+    2048: 'td2048'
+}
+const score = document.getElementById('score')
 let scorePoint = 0
 newGameButton.onclick = function () {
     newGame()
@@ -32,7 +45,7 @@ function keyIn(event) {
 
         const moveCheckBool = moveCheck(beforeTdDataList)
         const gameOverCheckBool = gameOverCheck()
-        const fullCheckBool = fullCheck() 
+        const fullCheckBool = fullCheck()
         if (moveCheckBool === true && fullCheckBool === false) {
             makeRandomNum2()
         } else {
@@ -45,8 +58,8 @@ function keyIn(event) {
         updateTable()
 
         const gameWinBool = gameWin()
-        if ( gameWinBool === true){ // 업데이트 테이블 전에 먼저 알람이 울림 why?
-            setTimeout( alert('YOU WIN'), 1000);
+        if (gameWinBool === true) { 
+            setTimeout(() => {alert('You Win')}, 1000);
         }
 
     } else {
@@ -60,8 +73,8 @@ function ArrowDown() { // 상하좌우 합치는 리펙토링이 생각보다 �
     for (let i = 0; i < 4; i++) {
         const ArrowDownList = []
         for (let j = 0; j < 4; j++) {
-            if (tdDataList[3-j][i] != 0) {
-                ArrowDownList.push(tdDataList[3-j][i])
+            if (tdDataList[3 - j][i] != 0) {
+                ArrowDownList.push(tdDataList[3 - j][i])
             }
         }
 
@@ -90,7 +103,7 @@ function ArrowDown() { // 상하좌우 합치는 리펙토링이 생각보다 �
             ArrowDownAnswer.push(0)
         }
         for (let s = 0; s < 4; s++) {
-            tdDataList[3-s][i] = ArrowDownAnswer[s]
+            tdDataList[3 - s][i] = ArrowDownAnswer[s]
         }
     }
 
@@ -220,7 +233,7 @@ function setTable() {
     for (i = 0; i < 4; i++) {
         const tr = document.createElement('tr')
         tr.id = i + 1
-        table.appendChild(tr)
+        table2048.appendChild(tr)
         for (j = 0; j < 4; j++) {
             const td = document.createElement('td')
             td.id = i * 4 + j + 1
@@ -239,33 +252,8 @@ function updateTable() {
                 tdList[i * 4 + j].textContent = tdDataList[i][j]
             } else {
                 tdList[i * 4 + j].textContent = ' '
-
             }
-            if (tdDataList[i][j] === 2){
-                tdList[i * 4 + j].className = 'two'
-            }
-            else if (tdDataList[i][j] === 4){
-                tdList[i * 4 + j].className = 'four'
-            }
-            else if (tdDataList[i][j] === 0){
-                tdList[i * 4 + j].className = 'zero'
-            }
-            else if (tdDataList[i][j] === 8){
-                tdList[i * 4 + j].className = 'eight'
-            }
-            else if (tdDataList[i][j] === 16){
-                tdList[i * 4 + j].className = 'sixteen'
-            }
-            else if (tdDataList[i][j] === 32){
-                tdList[i * 4 + j].className = 'thirtytwo'
-            }
-            else if (tdDataList[i][j] === 64){
-                tdList[i * 4 + j].className = 'sixtyfour'
-            }
-            else if (tdDataList[i][j] === 128){
-                tdList[i * 4 + j].className = 'onehundredtwentyeight'
-            }
-
+            tdList[i * 4 + j].className = dicTdColor[tdDataList[i][j]]
         }
     }
 }
@@ -336,7 +324,7 @@ function gameOverCheck() {
     return true
 }
 
-function gameWin(){
+function gameWin() {
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
             if (tdDataList[i][j] === 2048) {
@@ -359,7 +347,7 @@ function newGame() {
     score.textContent = 'Score = ' + scorePoint
     makeRandomNum2()
     makeRandomNum2()
-    // overrideTdDataList()
+    overrideTdDataList()
     updateTable()
 }
 
