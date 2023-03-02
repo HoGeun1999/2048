@@ -1,6 +1,6 @@
 const table2048 = document.getElementById('table2048')
 const newGameButton = document.getElementById('newGame')
-const tdList = []
+const tdElementList = []
 const tdDataList = [
     [0, 0, 0, 0],
     [0, 0, 0, 0],
@@ -32,7 +32,7 @@ window.addEventListener("keydown", keyIn)
 
 function keyIn(event) {
     const beforeTdDataList = tdDataList.map(v => v.slice())
-    if (eventKeyList.indexOf(event.key) != -1) {
+    if (eventKeyList.indexOf(event.key) !== -1) {
         if (event.key === 'ArrowDown') {
             ArrowDown()
         } else if (event.key === 'ArrowUp') {
@@ -43,13 +43,11 @@ function keyIn(event) {
             ArrowRight()
         }
 
-        const moveCheckBool = moveCheck(beforeTdDataList)
-        const gameOverCheckBool = gameOverCheck()
         const fullCheckBool = fullCheck()
-        if (moveCheckBool === true && fullCheckBool === false) {
+        if (moveCheck(beforeTdDataList) && !fullCheckBool) {
             makeRandomNum2()
         } else {
-            if (gameOverCheckBool === true && fullCheckBool === true) {
+            if (gameOverCheck() && fullCheckBool) {
                 alert("GAME OVER")
             }
         }
@@ -57,9 +55,10 @@ function keyIn(event) {
         printDataList()
         updateTable()
 
-        const gameWinBool = gameWin()
-        if (gameWinBool === true) { 
-            setTimeout(() => {alert('You Win')}, 1000);
+        if (gameWin()) {
+            setTimeout(() => {
+                alert('You Win')
+            }, 1000);
         }
 
     } else {
@@ -67,162 +66,98 @@ function keyIn(event) {
     }
 }
 
-
-function ArrowDown() { // 상하좌우 합치는 리펙토링이 생각보다 어려움
-    const moveCheck = false
+function mergeTrAndSumScore(trList) {
+    const mergedTrList = []
     for (let i = 0; i < 4; i++) {
-        const ArrowDownList = []
-        for (let j = 0; j < 4; j++) {
-            if (tdDataList[3 - j][i] != 0) {
-                ArrowDownList.push(tdDataList[3 - j][i])
-            }
-        }
-
-        const ArrowDownListLen = ArrowDownList.length
-        for (let k = 0; k < 4 - ArrowDownListLen; k++) {
-            ArrowDownList.push(0)
-        }
-
-        const ArrowDownAnswer = []
-        for (let p = 0; p < 4; p++) {
-            if (p === 3) {
-                ArrowDownAnswer.push(ArrowDownList[p])
-                break
-            }
-            if (ArrowDownList[p] === ArrowDownList[p + 1]) {
-                num1 = ArrowDownList[p] + ArrowDownList[p + 1]
-                scorePoint = scorePoint + num1
-                ArrowDownAnswer.push(num1)
-                p = p + 1
-            } else {
-                ArrowDownAnswer.push(ArrowDownList[p])
-            }
-        }
-        const ArrowDownAnswerLen = ArrowDownAnswer.length
-        for (let r = 0; r < 4 - ArrowDownAnswerLen; r++) {
-            ArrowDownAnswer.push(0)
-        }
-        for (let s = 0; s < 4; s++) {
-            tdDataList[3 - s][i] = ArrowDownAnswer[s]
+        if (i === 3) {
+            mergedTrList.push(trList[i])
+        } else if (trList[i] === trList[i + 1]) {
+            const num = trList[i] + trList[i + 1]
+            scorePoint = scorePoint + num
+            mergedTrList.push(num)
+            i = i + 1
+        } else {
+            mergedTrList.push(trList[i])
         }
     }
+    return mergedTrList
+}
 
-    return moveCheck
+function makeListLenFour(trList) {
+    const trListLen = trList.length
+    for (let i = 0; i < 4 - trListLen; i++) {
+        trList.push(0)
+    }
+}
+
+function ArrowDown() {
+    for (let i = 0; i < 4; i++) {
+        const trList = []
+        for (let j = 0; j < 4; j++) {
+            if (tdDataList[3 - j][i] !== 0) {
+                trList.push(tdDataList[3 - j][i])
+            }
+        }
+        makeListLenFour(trList)
+        const mergedTrList = mergeTrAndSumScore(trList)
+        makeListLenFour(mergedTrList)
+
+        for (let k = 0; k < 4; k++) {
+            tdDataList[3 - k][i] = mergedTrList[k]
+        }
+    }
 }
 
 function ArrowUp() {
     for (let i = 0; i < 4; i++) {
-        const ArrowUpList = []
+        const trList = []
         for (let j = 0; j < 4; j++) {
-            if (tdDataList[j][i] != 0) {
-                ArrowUpList.push(tdDataList[j][i])
+            if (tdDataList[j][i] !== 0) {
+                trList.push(tdDataList[j][i])
             }
         }
+        makeListLenFour(trList)
+        const mergedTrList = mergeTrAndSumScore(trList)
+        makeListLenFour(mergedTrList)
 
-        const ArrowUpListLen = ArrowUpList.length
-        for (let k = 0; k < 4 - ArrowUpListLen; k++) {
-            ArrowUpList.push(0)
-        }
-
-        const ArrowUpAnswer = []
-        for (let p = 0; p < 4; p++) {
-            if (p === 3) {
-                ArrowUpAnswer.push(ArrowUpList[p])
-                break
-            }
-            if (ArrowUpList[p] === ArrowUpList[p + 1]) {
-                num1 = ArrowUpList[p] + ArrowUpList[p + 1]
-                ArrowUpAnswer.push(num1)
-                scorePoint = scorePoint + num1
-                p = p + 1
-            } else {
-                ArrowUpAnswer.push(ArrowUpList[p])
-            }
-        }
-        const ArrowUpAnswerLen = ArrowUpAnswer.length
-        for (let r = 0; r < 4 - ArrowUpAnswerLen; r++) {
-            ArrowUpAnswer.push(0)
-        }
-        for (let s = 0; s < 4; s++) {
-            tdDataList[s][i] = ArrowUpAnswer[s]
+        for (let k = 0; k < 4; k++) {
+            tdDataList[k][i] = mergedTrList[k]
         }
     }
 }
 
 function ArrowLeft() {
     for (let i = 0; i < 4; i++) {
-        const ArrowLeftList = []
+        const trList = []
         for (let j = 0; j < 4; j++) {
-            if (tdDataList[i][j] != 0) {
-                ArrowLeftList.push(tdDataList[i][j])
+            if (tdDataList[i][j] !== 0) {
+                trList.push(tdDataList[i][j])
             }
         }
+        makeListLenFour(trList)
+        const mergedTrList = mergeTrAndSumScore(trList)
+        makeListLenFour(mergedTrList)
 
-        const ArrowLeftListLen = ArrowLeftList.length
-        for (let k = 0; k < 4 - ArrowLeftListLen; k++) {
-            ArrowLeftList.push(0)
-        }
-
-        const ArrowLeftAnswer = []
-        for (let p = 0; p < 4; p++) {
-            if (p === 3) {
-                ArrowLeftAnswer.push(ArrowLeftList[p])
-                break
-            }
-            if (ArrowLeftList[p] === ArrowLeftList[p + 1]) {
-                num1 = ArrowLeftList[p] + ArrowLeftList[p + 1]
-                ArrowLeftAnswer.push(num1)
-                scorePoint = scorePoint + num1
-                p = p + 1
-            } else {
-                ArrowLeftAnswer.push(ArrowLeftList[p])
-            }
-        }
-        const ArrowLeftAnswerLen = ArrowLeftAnswer.length
-        for (let r = 0; r < 4 - ArrowLeftAnswerLen; r++) {
-            ArrowLeftAnswer.push(0)
-        }
-        for (let s = 0; s < 4; s++) {
-            tdDataList[i][s] = ArrowLeftAnswer[s]
+        for (let k = 0; k < 4; k++) {
+            tdDataList[i][k] = mergedTrList[k]
         }
     }
 }
 
 function ArrowRight() {
     for (let i = 0; i < 4; i++) {
-        const ArrowRightList = []
+        const trList = []
         for (let j = 0; j < 4; j++) {
-            if (tdDataList[i][3 - j] != 0) {
-                ArrowRightList.push(tdDataList[i][3 - j])
+            if (tdDataList[i][3 - j] !== 0) {
+                trList.push(tdDataList[i][3 - j])
             }
         }
+        makeListLenFour(trList)
+        const mergedTrList = mergeTrAndSumScore(trList)
+        makeListLenFour(mergedTrList)
 
-        const ArrowRightListLen = ArrowRightList.length
-        for (let k = 0; k < 4 - ArrowRightListLen; k++) {
-            ArrowRightList.push(0)
-        }
-
-        const ArrowRightAnswer = []
-        for (let p = 0; p < 4; p++) {
-            if (p === 3) {
-                ArrowRightAnswer.push(ArrowRightList[p])
-                break
-            }
-            if (ArrowRightList[p] === ArrowRightList[p + 1]) {
-                num1 = ArrowRightList[p] + ArrowRightList[p + 1]
-                ArrowRightAnswer.push(num1)
-                scorePoint = scorePoint + num1
-                p = p + 1
-            } else {
-                ArrowRightAnswer.push(ArrowRightList[p])
-            }
-        }
-        const ArrowRightAnswerLen = ArrowRightAnswer.length
-        for (let r = 0; r < 4 - ArrowRightAnswerLen; r++) {
-            ArrowRightAnswer.push(0)
-        }
-        for (let s = 0; s < 4; s++) {
-            tdDataList[i][3 - s] = ArrowRightAnswer[s]
+        for (let k = 0; k < 4; k++) {
+            tdDataList[i][3 - k] = mergedTrList[k]
         }
     }
 }
@@ -230,15 +165,15 @@ function ArrowRight() {
 
 function setTable() {
 
-    for (i = 0; i < 4; i++) {
+    for (let i = 0; i < 4; i++) {
         const tr = document.createElement('tr')
         tr.id = i + 1
         table2048.appendChild(tr)
-        for (j = 0; j < 4; j++) {
+        for (let j = 0; j < 4; j++) {
             const td = document.createElement('td')
             td.id = i * 4 + j + 1
             tr.appendChild(td)
-            tdList.push(td)
+            tdElementList.push(td)
             tdDataList[i][j] = 0
         }
     }
@@ -248,12 +183,12 @@ function setTable() {
 function updateTable() {
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
-            if (tdDataList[i][j] != 0) {
-                tdList[i * 4 + j].textContent = tdDataList[i][j]
+            if (tdDataList[i][j] !== 0) {
+                tdElementList[i * 4 + j].textContent = tdDataList[i][j]
             } else {
-                tdList[i * 4 + j].textContent = ' '
+                tdElementList[i * 4 + j].textContent = ' '
             }
-            tdList[i * 4 + j].className = dicTdColor[tdDataList[i][j]]
+            tdElementList[i * 4 + j].className = dicTdColor[tdDataList[i][j]]
         }
     }
 }
@@ -293,7 +228,7 @@ function fullCheck() {
 function moveCheck(beforeTdDataList) {
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
-            if (tdDataList[i][j] != beforeTdDataList[i][j]) {
+            if (tdDataList[i][j] !== beforeTdDataList[i][j]) {
                 return true
             }
         }
@@ -347,7 +282,7 @@ function newGame() {
     score.textContent = 'Score = ' + scorePoint
     makeRandomNum2()
     makeRandomNum2()
-    overrideTdDataList()
+    // overrideTdDataList()
     updateTable()
 }
 
