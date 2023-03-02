@@ -1,5 +1,5 @@
-const table = document.getElementById('table')
-const newGameButton = document.getElementById('newGame')
+// const table = document.getElementById('table')    없어도 문제가 없다?..
+const newGameButton = document.getElementById('newGame') // 근데 얘는 없으면 테이블이 지워진다
 const tdList = []
 const tdDataList = [
     [0, 0, 0, 0],
@@ -9,6 +9,8 @@ const tdDataList = [
 ]
 const eventKeyList = ['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight']
 
+const score = document.getElementById('score')  //마찬가지..?? 자바스크립트 이상한데? 
+let scorePoint = 0
 newGameButton.onclick = function () {
     newGame()
 }
@@ -30,8 +32,7 @@ function keyIn(event) {
 
         const moveCheckBool = moveCheck(beforeTdDataList)
         const gameOverCheckBool = gameOverCheck()
-        const fullCheckBool = fullCheck()
-
+        const fullCheckBool = fullCheck() 
         if (moveCheckBool === true && fullCheckBool === false) {
             makeRandomNum2()
         } else {
@@ -39,22 +40,28 @@ function keyIn(event) {
                 alert("GAME OVER")
             }
         }
-
+        score.textContent = 'Score = ' + scorePoint
         printDataList()
-        setTimeout(updateTable(), 10000)
+        updateTable()
+
+        const gameWinBool = gameWin()
+        if ( gameWinBool === true){ // 업데이트 테이블 전에 먼저 알람이 울림 why?
+            setTimeout( alert('YOU WIN'), 1000);
+        }
+
     } else {
         console.log(100)
     }
 }
 
 
-function ArrowDown() {
+function ArrowDown() { // 상하좌우 합치는 리펙토링이 생각보다 어려움
     const moveCheck = false
     for (let i = 0; i < 4; i++) {
         const ArrowDownList = []
         for (let j = 0; j < 4; j++) {
-            if (tdDataList[3 - j][i] != 0) {
-                ArrowDownList.push(tdDataList[3 - j][i])
+            if (tdDataList[3-j][i] != 0) {
+                ArrowDownList.push(tdDataList[3-j][i])
             }
         }
 
@@ -71,6 +78,7 @@ function ArrowDown() {
             }
             if (ArrowDownList[p] === ArrowDownList[p + 1]) {
                 num1 = ArrowDownList[p] + ArrowDownList[p + 1]
+                scorePoint = scorePoint + num1
                 ArrowDownAnswer.push(num1)
                 p = p + 1
             } else {
@@ -82,7 +90,7 @@ function ArrowDown() {
             ArrowDownAnswer.push(0)
         }
         for (let s = 0; s < 4; s++) {
-            tdDataList[3 - s][i] = ArrowDownAnswer[s]
+            tdDataList[3-s][i] = ArrowDownAnswer[s]
         }
     }
 
@@ -112,6 +120,7 @@ function ArrowUp() {
             if (ArrowUpList[p] === ArrowUpList[p + 1]) {
                 num1 = ArrowUpList[p] + ArrowUpList[p + 1]
                 ArrowUpAnswer.push(num1)
+                scorePoint = scorePoint + num1
                 p = p + 1
             } else {
                 ArrowUpAnswer.push(ArrowUpList[p])
@@ -150,6 +159,7 @@ function ArrowLeft() {
             if (ArrowLeftList[p] === ArrowLeftList[p + 1]) {
                 num1 = ArrowLeftList[p] + ArrowLeftList[p + 1]
                 ArrowLeftAnswer.push(num1)
+                scorePoint = scorePoint + num1
                 p = p + 1
             } else {
                 ArrowLeftAnswer.push(ArrowLeftList[p])
@@ -188,6 +198,7 @@ function ArrowRight() {
             if (ArrowRightList[p] === ArrowRightList[p + 1]) {
                 num1 = ArrowRightList[p] + ArrowRightList[p + 1]
                 ArrowRightAnswer.push(num1)
+                scorePoint = scorePoint + num1
                 p = p + 1
             } else {
                 ArrowRightAnswer.push(ArrowRightList[p])
@@ -230,6 +241,31 @@ function updateTable() {
                 tdList[i * 4 + j].textContent = ' '
 
             }
+            if (tdDataList[i][j] === 2){
+                tdList[i * 4 + j].className = 'two'
+            }
+            else if (tdDataList[i][j] === 4){
+                tdList[i * 4 + j].className = 'four'
+            }
+            else if (tdDataList[i][j] === 0){
+                tdList[i * 4 + j].className = 'zero'
+            }
+            else if (tdDataList[i][j] === 8){
+                tdList[i * 4 + j].className = 'eight'
+            }
+            else if (tdDataList[i][j] === 16){
+                tdList[i * 4 + j].className = 'sixteen'
+            }
+            else if (tdDataList[i][j] === 32){
+                tdList[i * 4 + j].className = 'thirtytwo'
+            }
+            else if (tdDataList[i][j] === 64){
+                tdList[i * 4 + j].className = 'sixtyfour'
+            }
+            else if (tdDataList[i][j] === 128){
+                tdList[i * 4 + j].className = 'onehundredtwentyeight'
+            }
+
         }
     }
 }
@@ -300,6 +336,18 @@ function gameOverCheck() {
     return true
 }
 
+function gameWin(){
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            if (tdDataList[i][j] === 2048) {
+                return true
+            }
+        }
+    }
+
+    return false
+}
+
 
 function newGame() {
     for (let i = 0; i < 4; i++) {
@@ -307,11 +355,14 @@ function newGame() {
             tdDataList[i][j] = 0
         }
     }
+    scorePoint = 0
+    score.textContent = 'Score = ' + scorePoint
     makeRandomNum2()
     makeRandomNum2()
     // overrideTdDataList()
     updateTable()
 }
+
 
 function printDataList() {
     const arr = []
@@ -326,12 +377,13 @@ function printDataList() {
     console.log(' ')
 }
 
+
 function overrideTdDataList() {
     const arr = [
         [0, 0, 2, 2],
         [0, 0, 8, 2],
         [0, 16, 4, 2],
-        [4, 64, 2, 16]
+        [0, 1024, 1024, 0]
     ]
 
     for (let i = 0; i < 4; i++) {

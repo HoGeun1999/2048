@@ -6,3 +6,45 @@
     font-size: 50px;
 }
 
+body{
+    margin-left: 30%;
+    margin-top: 100px;
+}
+
+#score{
+    margin-left: 470px;
+    padding-bottom: 20px;
+    font-size: 30;
+}
+
+.zero{
+    background-attachment: white;
+}
+
+.two{
+    background-color: bisque;
+}
+
+.four{
+    background-color: aqua;
+}
+
+.eight{
+    background-color: plum;
+}
+
+.sixteen{
+    background-color: rgb(45, 177, 126);
+}
+
+.thirtytwo{
+    background-color: rgb(209, 98, 98);
+}
+
+.sixtyfour{
+    background-color: rgb(98, 98, 224);
+}
+
+.onehundredtwentyeight{
+    background-color: rgb(154, 204, 39);
+}
