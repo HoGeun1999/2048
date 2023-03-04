@@ -58,6 +58,7 @@ function keyIn(event) {
         if (gameWin()) {
             setTimeout(() => {
                 alert('You Win')
+                window.removeEventListener("keydown",keyIn)
             }, 1000);
         }
 
@@ -282,7 +283,7 @@ function newGame() {
     score.textContent = 'Score = ' + scorePoint
     makeRandomNum2()
     makeRandomNum2()
-    // overrideTdDataList()
+    overrideTdDataList()
     updateTable()
 }
 

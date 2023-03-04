@@ -48,3 +48,19 @@ body{
 .td128{
     background-color: rgb(154, 204, 39);
 }
+
+.td256{
+    background-color: aliceblue;
+}
+
+.td512{
+    background-color: blueviolet;
+}
+
+.td1024{
+    background-color: rgb(189, 207, 22);
+}
+
+.td2048{
+    background-color: orangered;
+}
