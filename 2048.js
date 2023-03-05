@@ -28,9 +28,8 @@ newGameButton.onclick = function () {
     newGame()
 }
 
-window.addEventListener("keydown", keyIn)
-
 function keyIn(event) {
+    console.log(1000)
     const beforeTdDataList = tdDataList.map(v => v.slice())
     if (eventKeyList.indexOf(event.key) !== -1) {
         if (event.key === 'ArrowDown') {
@@ -279,11 +278,12 @@ function newGame() {
             tdDataList[i][j] = 0
         }
     }
+    window.addEventListener("keydown", keyIn)
     scorePoint = 0
     score.textContent = 'Score = ' + scorePoint
     makeRandomNum2()
     makeRandomNum2()
-    overrideTdDataList()
+    // overrideTdDataList()
     updateTable()
 }
 
